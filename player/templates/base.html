@@ -5,13 +5,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+        {% block title %}
+        {% endblock %}
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 </head>
 <body>
     <div class="alert alert-info" role="alert">
         <h1>:D</h1>
         Template
+        <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'player_logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'player_login' %}">Login</a></li>
+            {% endif %}
+        </ul>
     </div>
 
     <div class="container">
