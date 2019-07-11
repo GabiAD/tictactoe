@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <h1>Hello there, {{ user.username }}! :)</h1>
+{% block content %}
+    <div class="alert alert-warning" role="alert">
+      <h1>Hello there, {{ user.username }}! :)</h1>
+    </div>
+
 
     <ul>
         {% for g in games %}
             <li> Game {{ g.id }}, {{ g.first_player }}, {{ g.second_player }}</li>
         {% endfor %}
     </ul>
-
-</body>
-</html>
+{% endblock %}
