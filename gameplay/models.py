@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
+from django.urls import reverse
 
 GAME_STATUS_CHOICES = (
   ("F", "First player's turn"),
@@ -9,6 +10,8 @@ GAME_STATUS_CHOICES = (
   ("L", "Second player wins"),
   ("D", "Draw"),
 )
+
+BOARD_SIZE = 3
 
 
 class GamesQuerySet(models.QuerySet):
@@ -30,6 +33,26 @@ class Game(models.Model):
 
   objects = GamesQuerySet.as_manager()
 
+  def new_move(self):
+    if self.status not in "FS":
+      raise ValueError("Cannot make move on finished game")
+
+    return Move(game=self, by_first_player=(self.status == "F"))
+
+  def is_users_move(self, user):
+    return (user == self.first_player and self.status == "F") or (user == self.second_player and self.status == "S")
+
+  def board(self):
+    board = [[None for x in range(BOARD_SIZE)] for y in range(BOARD_SIZE)]
+
+    for move in self.move_set.all():
+      board[move.y][move.x] = move
+
+    return board
+
+  def get_absolute_url(self):
+    return reverse("gameplay_detail", args=[self.id])
+
   def __str__(self):
     return f"{self.first_player} vs {self.second_player}"
 
@@ -37,7 +60,7 @@ class Game(models.Model):
 class Move(models.Model):
   x = models.IntegerField()
   y = models.IntegerField()
-  cpmment = models.CharField(max_length=300, blank=True)
-  by_first_player = models.BooleanField()
+  comment = models.CharField(max_length=300, blank=True)
+  by_first_player = models.BooleanField(editable=False)
 
-  game = models.ForeignKey(Game, on_delete=models.CASCADE)
+  game = models.ForeignKey(Game, on_delete=models.CASCADE, editable=False)
