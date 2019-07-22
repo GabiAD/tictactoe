@@ -26,9 +26,21 @@
 
 {% block content %}
     <h1>This is the game detail page for {{ game }}</h1>
-    {{ game.board }}
     <div class="row">
         <div class="col-md-5">
+
+            {% if game.status == "F" %}
+                {{ game.first_player }} to move
+            {% elif game.status == "S" %}
+                {{ game.second_player }} to move
+            {% elif game.status == "W" %}
+                {{ game.first_player }} won
+            {% elif game.status == "S" %}
+                {{ game.second_player }} won
+            {% elif game.status == "D" %}
+                Draw
+            {% endif %}
+
             <table class="table table-bordered tictactoe-table">
                 {% for row in game.board %}
                     <tr>

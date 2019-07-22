@@ -28,13 +28,7 @@ def make_move(request, id):
   form = MoveForm(instance=move, data=request.POST)
 
   if form.is_valid():
-
-    if game.status == "F":
-      game.status = "S"
-    else:
-      game.status = "F"
     game.save()
-
     form.save()
     return redirect("gameplay_detail", id)
   else:
